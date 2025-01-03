@@ -1,4 +1,5 @@
-from utils import billing_provider_loop, subscriber_loop
+from billing_provider import billing_provider_loop
+from subscriber import subscriber_loop
 import json
 
 
