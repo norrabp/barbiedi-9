@@ -5,10 +5,11 @@ from constants import (
     ReferenceIdentificationQualifier,
     SegmentHeader,
 )
+from models.provider import Entity
 
 
-def provider_segment(
-    json_data: dict,
+def entity_segment(
+    entity: Entity,
     entity_identifier_code: EntityIdentifierCode,
     reference_identification_qualifier: ReferenceIdentificationQualifier,
 ) -> list[str]:
@@ -20,21 +21,21 @@ def provider_segment(
                 *(
                     [
                         EntityTypeQualifier.NonPerson.value,
-                        json_data["organizationName"],
+                        entity.organization_name,
                         "",
                     ]
-                    if "organizationName" in json_data
+                    if entity.organization_name
                     else [
                         EntityTypeQualifier.Person.value,
-                        json_data["lastName"],
-                        json_data["firstName"],
+                        entity.last_name,
+                        entity.first_name,
                     ]
                 ),
                 "",
                 "",
                 "",
                 reference_identification_qualifier.value,
-                json_data.get("npi", PayerIdentifier.WIMCD.value),
+                entity.npi or PayerIdentifier.WIMCD.value,
             ]
         )
         + "~"

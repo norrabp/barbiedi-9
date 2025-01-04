@@ -1,18 +1,19 @@
 from constants import (
-    DateTimeQualifier,
     DateTimePeriodFormatQualifier,
+    DateTimeQualifier,
     EntityIdentifierCode,
+    ProviderType,
     ReferenceIdentificationQualifier,
     SegmentHeader,
-    ProviderType,
 )
-from util.provider import provider_segment
+from models.provider import Provider
+from util.entity_segment import entity_segment
 
 
-def rendering_provider_segment(json_data: dict) -> str:
+def rendering_provider_segment(provider: Provider) -> str:
     return [
-        *provider_segment(
-            json_data,
+        *entity_segment(
+            provider,
             EntityIdentifierCode.RenderingProvider,
             ReferenceIdentificationQualifier.NationalProviderIdentifier,
         ),
@@ -21,7 +22,7 @@ def rendering_provider_segment(json_data: dict) -> str:
                 SegmentHeader.Provider.value,
                 ProviderType.Performing.value,
                 ReferenceIdentificationQualifier.TaxonomyCode.value,
-                json_data["taxonomyCode"],
+                provider.taxonomy_code,
             ]
         )
         + "~",

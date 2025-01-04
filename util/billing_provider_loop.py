@@ -1,15 +1,16 @@
 from constants import (
-    EntityTypeQualifier,
-    SegmentHeader,
-    ProviderType,
     EntityIdentifierCode,
+    EntityTypeQualifier,
+    ProviderType,
     ReferenceIdentificationQualifier,
+    SegmentHeader,
 )
-from util.address import address_segment
-from util.provider import provider_segment
+from models.provider import Provider
+from util.address_segment import address_segment
+from util.entity_segment import entity_segment
 
 
-def billing_provider_loop(json_data: dict) -> list[str]:
+def billing_provider_loop(provider: Provider) -> list[str]:
     # Billing provider
     # provider (PRV) segment
     return [
@@ -18,22 +19,22 @@ def billing_provider_loop(json_data: dict) -> list[str]:
                 SegmentHeader.Provider.value,
                 ProviderType.Billing.value,
                 ReferenceIdentificationQualifier.TaxonomyCode.value,
-                json_data["billing"]["taxonomyCode"],
+                provider.taxonomy_code,
             ]
         )
         + "~",
         # name (NM1) segment
-        *provider_segment(
-            json_data["billing"],
+        *entity_segment(
+            provider,
             EntityIdentifierCode.BillingProvider,
             ReferenceIdentificationQualifier.NationalProviderIdentifier,
         ),
-        *address_segment(json_data["billing"]["address"]),
+        *address_segment(provider.address),
         "*".join(
             [
                 SegmentHeader.Reference.value,
                 ReferenceIdentificationQualifier.EmployerIdentificationNumber.value,
-                json_data["billing"]["employerId"],
+                provider.employer_id,
             ]
         )
         + "~",

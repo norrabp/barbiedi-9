@@ -1,7 +1,7 @@
 import enum
 
 
-class SegmentHeader(enum.Enum):
+class SegmentHeader(str, enum.Enum):
     Provider = "PRV"
     Name = "NM1"
     AddressLine1 = "N3"
@@ -17,16 +17,16 @@ class SegmentHeader(enum.Enum):
     RenderingProvider = "PRV"
 
 
-class ProviderType(enum.Enum):
+class ProviderType(str, enum.Enum):
     Billing = "BI"
     Performing = "PE"
 
 
-class RelationshipToSubscriber(enum.Enum):
+class RelationshipToSubscriber(str, enum.Enum):
     Self = "18"
 
 
-class EntityIdentifierCode(enum.Enum):
+class EntityIdentifierCode(str, enum.Enum):
     BillingProvider = "85"
     InsuredOrSubscriber = "IL"
     Payer = "PR"
@@ -34,7 +34,7 @@ class EntityIdentifierCode(enum.Enum):
     RenderingProvider = "82"
 
 
-class ReferenceIdentificationQualifier(enum.Enum):
+class ReferenceIdentificationQualifier(str, enum.Enum):
     TaxonomyCode = "PXC"
     NationalProviderIdentifier = "XX"
     MemberId = "MI"
@@ -43,36 +43,77 @@ class ReferenceIdentificationQualifier(enum.Enum):
     PriorAuthorizationNumber = "G1"
 
 
-class ClaimFilingIndicatorCode(enum.Enum):
+class ClaimFilingIndicatorCode(str, enum.Enum):
+    # Should update with more values when they come in
     Medicaid = "MC"
     BlueCrossBlueShield = "BL"
     CommercialInsuranceCompany = "CI"
 
 
-class PaymentResponsibilityLevelCode(enum.Enum):
-    Primary = "P"
+class PaymentResponsibilityLevelCode(str, enum.Enum):
+    Patient = "P"
 
 
-class DateTimeQualifier(enum.Enum):
+class DateTimeQualifier(str, enum.Enum):
     Service = "472"
 
 
-class DateTimePeriodFormatQualifier(enum.Enum):
+class DateTimePeriodFormatQualifier(str, enum.Enum):
     CCYYMMDD = "D8"
 
 
-class EntityTypeQualifier(enum.Enum):
+class EntityTypeQualifier(str, enum.Enum):
     Person = "1"
     NonPerson = "2"
 
 
-class PayerIdentifier(enum.Enum):
+class PayerIdentifier(str, enum.Enum):
     WIMCD = "WIMCD"
 
 
-class FacilityCodeQualifier(enum.Enum):
+class FacilityCodeQualifier(str, enum.Enum):
     ProfessionalOrDentalServices = "B"
 
 
-class ProductOrServiceQualifier(enum.Enum):
+class ProductOrServiceQualifier(str, enum.Enum):
     HCPCS = "HC"
+
+
+class Gender(str, enum.Enum):
+    Male = "M"
+    Female = "F"
+    Other = "O"
+
+
+class YesNo(str, enum.Enum):
+    Yes = "Y"
+    No = "N"
+
+
+class PlanParticipationCode(str, enum.Enum):
+    # Should update with more values when they come in
+    Active = "A"
+
+
+class PlaceOfServiceCode(str, enum.Enum):
+    # Should update with more values when they come in
+    Office = "11"
+    Home = "12"
+
+
+class DiagnosisTypeCode(str, enum.Enum):
+    ICD10CM = "ABK"
+
+
+class ClaimFrequencyCode(str, enum.Enum):
+    # Should update with more values when they come in
+    Original = "1"
+
+
+class DiagnosisCode(str, enum.Enum):
+    # Should update with more values when they come in
+    F840 = "F840"
+
+
+class MeasurementUnit(str, enum.Enum):
+    Unit = "UN"

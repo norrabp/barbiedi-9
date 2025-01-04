@@ -4,28 +4,26 @@ from constants import (
     ReferenceIdentificationQualifier,
     SegmentHeader,
 )
-from util.address import address_segment
+from models.service_facility_location import ServiceFacilityLocation
+from util.address_segment import address_segment
 
 
-def service_facility_loop(json_data: dict) -> list[str]:
+def service_facility_loop(service_facility: ServiceFacilityLocation) -> list[str]:
     return [
         "*".join(
             [
                 SegmentHeader.Name.value,
                 EntityIdentifierCode.ServiceFacility.value,
                 EntityTypeQualifier.NonPerson.value,
-                json_data["claimInformation"]["serviceFacilityLocation"][
-                    "organizationName"
-                ],
+                service_facility.organization_name,
                 "",
                 "",
                 "",
                 "",
                 ReferenceIdentificationQualifier.NationalProviderIdentifier.value,
-                json_data["claimInformation"]["serviceFacilityLocation"]["npi"],
+                service_facility.npi,
             ]
         )
         + "~",
-        *address_segment(json_data["claimInformation"]["serviceFacilityLocation"]["address"])
-    
+        *address_segment(service_facility.address),
     ]

@@ -1,22 +1,27 @@
 from constants import (
+    ClaimFilingIndicatorCode,
     DateTimePeriodFormatQualifier,
     EntityIdentifierCode,
     EntityTypeQualifier,
-    SegmentHeader,
-    RelationshipToSubscriber,
-    ReferenceIdentificationQualifier,
-    ClaimFilingIndicatorCode,
     PaymentResponsibilityLevelCode,
+    ReferenceIdentificationQualifier,
+    RelationshipToSubscriber,
+    SegmentHeader,
 )
+from models.claim_information import ClaimInformation
+from models.patient import Patient
+from util.address_segment import address_segment
 
 
-def subscriber_loop(json_data: dict) -> list[str]:
+def subscriber_loop(
+    subscriber: Patient, claim_information: ClaimInformation
+) -> list[str]:
     return [
         "*".join(
             [
                 SegmentHeader.SubscriberInformation.value,
                 PaymentResponsibilityLevelCode(
-                    json_data["subscriber"]["paymentResponsibilityLevelCode"]
+                    subscriber.payment_responsibility_level_code
                 ).value,
                 RelationshipToSubscriber.Self.value,
                 "",
@@ -25,9 +30,7 @@ def subscriber_loop(json_data: dict) -> list[str]:
                 "",
                 "",
                 "",
-                ClaimFilingIndicatorCode(
-                    json_data["claimInformation"]["claimFilingCode"]
-                ).value,
+                ClaimFilingIndicatorCode(claim_information.claim_filing_code).value,
             ]
         )
         + "~",
@@ -36,38 +39,23 @@ def subscriber_loop(json_data: dict) -> list[str]:
                 SegmentHeader.Name.value,
                 EntityIdentifierCode.InsuredOrSubscriber.value,
                 EntityTypeQualifier.Person.value,
-                json_data["subscriber"]["lastName"],
-                json_data["subscriber"]["firstName"],
+                subscriber.last_name,
+                subscriber.first_name,
                 "",
                 "",
                 "",
                 ReferenceIdentificationQualifier.MemberId.value,
-                json_data["subscriber"]["memberId"],
+                subscriber.member_id,
             ]
         )
         + "~",
-        "*".join(
-            [
-                SegmentHeader.AddressLine1.value,
-                json_data["subscriber"]["address"]["address1"],
-            ]
-        )
-        + "~",
-        "*".join(
-            [
-                SegmentHeader.CityStatePostalCode.value,
-                json_data["subscriber"]["address"]["city"],
-                json_data["subscriber"]["address"]["state"],
-                json_data["subscriber"]["address"]["postalCode"],
-            ]
-        )
-        + "~",
+        *address_segment(subscriber.address),
         "*".join(
             [
                 SegmentHeader.Demographics.value,
                 DateTimePeriodFormatQualifier.CCYYMMDD.value,
-                json_data["subscriber"]["dateOfBirth"],
-                json_data["subscriber"]["gender"],
+                subscriber.date_of_birth,
+                subscriber.gender,
             ]
         )
         + "~",
