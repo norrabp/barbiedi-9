@@ -1,5 +1,13 @@
-from billing_provider import billing_provider_loop
-from subscriber import subscriber_loop
+import sys
+from constants import EntityIdentifierCode, ReferenceIdentificationQualifier
+from util import (
+    billing_provider_loop,
+    provider_segment,
+    subscriber_loop,
+    claim_information_loop,
+    service_facility_loop,
+    service_line_loop,
+)
 import json
 
 
@@ -21,26 +29,50 @@ IEA*1*415133923~
 
     return "\n".join(
         [
-            "HEADER",
+            # "HEADER",
             hard_coded_header,
-            "BILLING PROVIDER LOOP",
+            # "BILLING PROVIDER LOOP",
             *billing_provider_loop(json_data),
             "HL*2*1*22*0~",  # Hierarchical Level
-            "SUBSCRIBER LOOP",
+            # "SUBSCRIBER LOOP",
             *subscriber_loop(json_data),
-            "TRAILER",
-            hard_coded_trailer
+            # "PAYER LOOP",
+            *provider_segment(
+                json_data["receiver"],
+                EntityIdentifierCode.Payer,
+                ReferenceIdentificationQualifier.Payer,
+            ),
+            # "CLAIM INFORMATION LOOP",
+            *claim_information_loop(json_data),
+            # "SERVICE FACILITY LOOP",
+            *service_facility_loop(json_data),
+            # "SERVICE LINE LOOP",
+            *service_line_loop(json_data),
+            # "TRAILER",
+            hard_coded_trailer,
         ]
     )
 
 
 def main():
-    
-    filename = "./examples/mojo_dojo_casa_house.json"
-    with open(filename) as file:
-        json_data = json.load(file)
-    
-    print(get_edi(json_data))
+    if len(sys.argv) < 2:
+        print("Usage: python json_to_edi.py <path_to_json_file>")
+        sys.exit(1)
 
+    filename = sys.argv[1]
+    if not filename.lower().endswith('.json'):
+        print("Error: File must have a .json extension")
+        sys.exit(1)
+    try:
+        with open(filename) as file:
+            json_data = json.load(file)
+        print(get_edi(json_data))
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found")
+        sys.exit(1)
+    except json.JSONDecodeError:
+        print(f"Error: File '{filename}' is not valid JSON")
+        sys.exit(1)
 
-main()
+if __name__ == "__main__":
+    main()

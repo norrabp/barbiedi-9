@@ -1,5 +1,7 @@
 from constants import (
     DateTimePeriodFormatQualifier,
+    EntityIdentifierCode,
+    EntityTypeQualifier,
     SegmentHeader,
     RelationshipToSubscriber,
     ReferenceIdentificationQualifier,
@@ -23,15 +25,17 @@ def subscriber_loop(json_data: dict) -> list[str]:
                 "",
                 "",
                 "",
-                ClaimFilingIndicatorCode.Medicaid.value,
+                ClaimFilingIndicatorCode(
+                    json_data["claimInformation"]["claimFilingCode"]
+                ).value,
             ]
         )
         + "~",
         "*".join(
             [
                 SegmentHeader.Name.value,
-                "IL",
-                "1",
+                EntityIdentifierCode.InsuredOrSubscriber.value,
+                EntityTypeQualifier.Person.value,
                 json_data["subscriber"]["lastName"],
                 json_data["subscriber"]["firstName"],
                 "",
@@ -63,8 +67,8 @@ def subscriber_loop(json_data: dict) -> list[str]:
                 SegmentHeader.Demographics.value,
                 DateTimePeriodFormatQualifier.CCYYMMDD.value,
                 json_data["subscriber"]["dateOfBirth"],
-                json_data["subscriber"]["gender"]
+                json_data["subscriber"]["gender"],
             ]
         )
-        + "~"
+        + "~",
     ]
