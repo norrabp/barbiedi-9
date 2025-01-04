@@ -12,25 +12,20 @@ import json
 
 
 def get_edi(json_data) -> str:
-    hard_coded_header = """
-ISA*00*          *00*          *ZZ*AV09311993     *01*030240928      *240702*1531*^*00501*415133923*0*P*>~
-GS*HC*1923294*030240928*20240702*1533*415133923*X*005010X222A1~
-ST*837*415133923*005010X222A1~
-BHT*0019*00*1*20240702*1531*CH~
-NM1*41*2*Mattel Industries*****46*1234567890~
-PER*IC*Ruth Handler*TE*8458130000~
-NM1*40*2*AVAILITY 5010*****46*030240928~
-HL*1**20*1~"""
+    interchange_control_header = "ISA*00*          *00*          *ZZ*AV09311993     *01*030240928      *240702*1531*^*00501*415133923*0*P*>~"
+    header = [
+        "GS*HC*1923294*030240928*20240702*1533*415133923*X*005010X222A1~",
+        "ST*837*415133923*005010X222A1~",
+        "BHT*0019*00*1*20240702*1531*CH~",
+        "NM1*41*2*Mattel Industries*****46*1234567890~",
+        "PER*IC*Ruth Handler*TE*8458130000~",
+        "NM1*40*2*AVAILITY 5010*****46*030240928~",
+        "HL*1**20*1~",
+    ]
 
-    hard_coded_trailer = """SE*30*415133923~
-GE*1*415133923~
-IEA*1*415133923~
-"""
-
-    return "\n".join(
-        [
+    content = [
             # "HEADER",
-            hard_coded_header,
+            *header,
             # "BILLING PROVIDER LOOP",
             *billing_provider_loop(json_data),
             "HL*2*1*22*0~",  # Hierarchical Level
@@ -48,8 +43,20 @@ IEA*1*415133923~
             *service_facility_loop(json_data),
             # "SERVICE LINE LOOP",
             *service_line_loop(json_data),
-            # "TRAILER",
-            hard_coded_trailer,
+        ]
+    
+    trailer = [
+        # "TRAILER",
+        f"SE*{len(content)}*415133923~",
+        "GE*1*415133923~",
+        "IEA*1*415133923~",
+    ]
+
+    return "\n".join(
+        [
+            interchange_control_header,
+            *content,
+            *trailer,
         ]
     )
 
@@ -73,6 +80,7 @@ def main():
     except json.JSONDecodeError:
         print(f"Error: File '{filename}' is not valid JSON")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

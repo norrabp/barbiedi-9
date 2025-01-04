@@ -11,17 +11,8 @@ from util.provider import provider_segment
 
 def rendering_provider_segment(json_data: dict) -> str:
     return [
-        "*".join(
-            [
-                SegmentHeader.ServiceDate.value,
-                DateTimeQualifier.Service.value,
-                DateTimePeriodFormatQualifier.CCYYMMDD.value,
-                json_data["serviceDate"],
-            ]
-        )
-        + "~",
         *provider_segment(
-            json_data["renderingProvider"],
+            json_data,
             EntityIdentifierCode.RenderingProvider,
             ReferenceIdentificationQualifier.NationalProviderIdentifier,
         ),
@@ -30,7 +21,7 @@ def rendering_provider_segment(json_data: dict) -> str:
                 SegmentHeader.Provider.value,
                 ProviderType.Performing.value,
                 ReferenceIdentificationQualifier.TaxonomyCode.value,
-                json_data["renderingProvider"]["taxonomyCode"],
+                json_data["taxonomyCode"],
             ]
         )
         + "~",

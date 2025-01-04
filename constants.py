@@ -46,6 +46,7 @@ class ReferenceIdentificationQualifier(enum.Enum):
 class ClaimFilingIndicatorCode(enum.Enum):
     Medicaid = "MC"
     BlueCrossBlueShield = "BL"
+    CommercialInsuranceCompany = "CI"
 
 
 class PaymentResponsibilityLevelCode(enum.Enum):
