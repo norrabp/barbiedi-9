@@ -1,10 +1,9 @@
 from typing import Optional
 
-from models.base import CamelCaseBaseModel
+from models.camel_case_base_model import CamelCaseBaseModel
 from models.claim_information import ClaimInformation
+from models.entity import Provider, Receiver, Submitter
 from models.patient import Patient
-from models.provider import Provider, Receiver
-from models.submitter import Submitter
 
 
 class Claim(CamelCaseBaseModel):

@@ -1,21 +1,22 @@
 from typing import List
 
 from constants import (
+    BenefitsAssignmentCertificationIndicator,
     ClaimFilingIndicatorCode,
     ClaimFrequencyCode,
-    DiagnosisCode,
     DiagnosisTypeCode,
     PlaceOfServiceCode,
     PlanParticipationCode,
-    YesNo,
+    ProviderSignatureIndicator,
+    ReleaseOfInformationCode,
 )
-from models.base import CamelCaseBaseModel
-from models.service_facility_location import ServiceFacilityLocation
+from models.camel_case_base_model import CamelCaseBaseModel
+from models.entity import ServiceFacilityLocation
 from models.service_line import ServiceLine
 
 
 class HealthCareCode(CamelCaseBaseModel):
-    diagnosis_code: DiagnosisCode
+    diagnosis_code: str
     diagnosis_type_code: DiagnosisTypeCode
 
 
@@ -29,11 +30,13 @@ class ClaimInformation(CamelCaseBaseModel):
     claim_charge_amount: float
     claim_frequency_code: ClaimFrequencyCode
     place_of_service_code: PlaceOfServiceCode
-    signature_indicator: YesNo
+    signature_indicator: ProviderSignatureIndicator
     patient_control_number: str
     plan_participation_code: PlanParticipationCode
-    release_information_code: YesNo
+    release_information_code: ReleaseOfInformationCode
     service_facility_location: ServiceFacilityLocation
     health_care_code_information: List[HealthCareCode]
     claim_supplemental_information: ClaimSupplementalInformation
-    benefits_assignment_certification_indicator: YesNo
+    benefits_assignment_certification_indicator: (
+        BenefitsAssignmentCertificationIndicator
+    )

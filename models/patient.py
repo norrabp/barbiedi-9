@@ -1,8 +1,8 @@
 from typing import Optional
 
-from constants import Gender, PaymentResponsibilityLevelCode
+from constants import Gender, PaymentResponsibilityLevelCode, RelationshipToSubscriber
 from models.address import Address
-from models.base import CamelCaseBaseModel
+from models.camel_case_base_model import CamelCaseBaseModel
 
 
 class Patient(CamelCaseBaseModel):
@@ -14,3 +14,4 @@ class Patient(CamelCaseBaseModel):
     group_number: Optional[str] = None
     payment_responsibility_level_code: PaymentResponsibilityLevelCode
     gender: Optional[Gender] = None
+    relationship_to_subscriber_code: Optional[RelationshipToSubscriber] = None

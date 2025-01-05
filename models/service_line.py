@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 from constants import MeasurementUnit
-from models.base import CamelCaseBaseModel
-from models.provider import Provider
+from models.camel_case_base_model import CamelCaseBaseModel
+from models.entity import Provider
 
 
 class CompositeDiagnosisCodePointers(CamelCaseBaseModel):

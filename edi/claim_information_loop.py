@@ -1,8 +1,5 @@
-from constants import (
-    FacilityCodeQualifier,
-    ReferenceIdentificationQualifier,
-    SegmentHeader,
-)
+from constants import (FacilityCodeQualifier, ReferenceIdentificationQualifier,
+                       SegmentHeader)
 from models.claim_information import ClaimInformation, HealthCareCode
 
 
@@ -10,7 +7,7 @@ def claim_information_loop(claim_information: ClaimInformation) -> list[str]:
     return [
         "*".join(
             [
-                SegmentHeader.ClaimInformation.value,
+                SegmentHeader.ClaimInformation,  # CLM
                 claim_information.patient_control_number,
                 f"{claim_information.claim_charge_amount:.1f}",
                 "",
@@ -25,15 +22,15 @@ def claim_information_loop(claim_information: ClaimInformation) -> list[str]:
         + "~",
         "*".join(
             [
-                SegmentHeader.Reference.value,
-                ReferenceIdentificationQualifier.PriorAuthorizationNumber.value,
+                SegmentHeader.Reference,  # REF
+                ReferenceIdentificationQualifier.PriorAuthorizationNumber,  # G1
                 claim_information.claim_supplemental_information.prior_authorization_number,
             ]
         )
         + "~",
         "*".join(
             [
-                SegmentHeader.HealthCareDiagnosisCode.value,
+                SegmentHeader.HealthCareDiagnosisCode,  # HI
                 diagnosis_code_segment(
                     claim_information.health_care_code_information[0]
                 ),
@@ -47,7 +44,7 @@ def service_facility_segment(claim_information: ClaimInformation) -> str:
     return ">".join(
         [
             claim_information.place_of_service_code,
-            FacilityCodeQualifier.ProfessionalOrDentalServices.value,
+            FacilityCodeQualifier.ProfessionalOrDentalServices,  # B
             claim_information.claim_frequency_code,
         ]
     )

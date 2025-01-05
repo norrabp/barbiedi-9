@@ -8,22 +8,11 @@ from models.contact_information import ContactInformation
 
 
 class Entity(CamelCaseBaseModel):
+    # TODO: Add validation that either organization_name or first_name and last_name are provided
     npi: Optional[str] = None
     last_name: Optional[str] = None
     first_name: Optional[str] = None
     organization_name: Optional[str] = None
-
-    # @field_validator("organization_name", "last_name", "first_name")
-    # @classmethod
-    # def validate_name_fields(cls, value: Optional[str], info: ValidationInfo):
-    #     values = info.data
-    #     if not values.get("organization_name"):
-    #         if not (values.get("last_name") and values.get("first_name")):
-    #             raise ValueError(
-    #                 "Must provide either organization_name or both first_name and last_name"
-    #             )
-
-    #     return value
 
 
 class Provider(Entity):
@@ -35,3 +24,13 @@ class Provider(Entity):
 
 class Receiver(Entity):
     pass
+
+
+class Submitter(Entity):
+    contact_information: ContactInformation
+
+
+class ServiceFacilityLocation(Entity):
+    address: Address
+    phone_name: str
+    phone_number: str

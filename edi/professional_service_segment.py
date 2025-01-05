@@ -6,7 +6,7 @@ def professional_service_segment(professional_service: ProfessionalService) -> s
     return [
         "*".join(
             [
-                SegmentHeader.ServiceLine.value,
+                SegmentHeader.ServiceLine,  # SV1
                 procedure_segment(professional_service),
                 f"{professional_service.line_item_charge_amount:.1f}",
                 professional_service.measurement_unit,

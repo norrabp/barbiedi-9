@@ -1,11 +1,7 @@
-from constants import (
-    EntityIdentifierCode,
-    EntityTypeQualifier,
-    PayerIdentifier,
-    ReferenceIdentificationQualifier,
-    SegmentHeader,
-)
-from models.provider import Entity
+from constants import (EntityIdentifierCode, EntityTypeQualifier,
+                       PayerIdentifier, ReferenceIdentificationQualifier,
+                       SegmentHeader)
+from models.entity import Entity
 
 
 def entity_segment(
@@ -16,17 +12,17 @@ def entity_segment(
     return [
         "*".join(
             [
-                SegmentHeader.Name.value,
-                entity_identifier_code.value,
+                SegmentHeader.Name,  # NM1
+                entity_identifier_code,
                 *(
                     [
-                        EntityTypeQualifier.NonPerson.value,
+                        EntityTypeQualifier.NonPerson,  # 2
                         entity.organization_name,
                         "",
                     ]
                     if entity.organization_name
                     else [
-                        EntityTypeQualifier.Person.value,
+                        EntityTypeQualifier.Person,  # 1
                         entity.last_name,
                         entity.first_name,
                     ]
@@ -34,8 +30,8 @@ def entity_segment(
                 "",
                 "",
                 "",
-                reference_identification_qualifier.value,
-                entity.npi or PayerIdentifier.WIMCD.value,
+                reference_identification_qualifier,
+                entity.npi or PayerIdentifier.WIMCD,  # WIMCD
             ]
         )
         + "~"

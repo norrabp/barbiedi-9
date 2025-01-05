@@ -4,18 +4,21 @@ import sys
 from pydantic import ValidationError
 
 from constants import EntityIdentifierCode, ReferenceIdentificationQualifier
+from edi.billing_provider_loop import billing_provider_loop
+from edi.claim_information_loop import claim_information_loop
+from edi.dependent_loop import dependent_loop
+from edi.entity_segment import entity_segment
+from edi.service_facility_segment import service_facility_segment
+from edi.service_line_segment import service_line_segment
+from edi.subscriber_loop import subscriber_loop
 from models.claim import Claim
-from util import (
-    billing_provider_loop,
-    claim_information_loop,
-    entity_segment,
-    service_facility_loop,
-    service_line_loop,
-    subscriber_loop,
-)
+from util.get_hierarchical_levels import get_hierarchical_levels
 
 
 def get_edi(claim: Claim) -> str:
+    """
+    Generate an EDI 837 claim from a JSON claim.
+    """
     interchange_control_header = "ISA*00*          *00*          *ZZ*AV09311993     *01*030240928      *240702*1531*^*00501*415133923*0*P*>~"
     header = [
         "GS*HC*1923294*030240928*20240702*1533*415133923*X*005010X222A1~",
@@ -24,29 +27,33 @@ def get_edi(claim: Claim) -> str:
         "NM1*41*2*Mattel Industries*****46*1234567890~",
         "PER*IC*Ruth Handler*TE*8458130000~",
         "NM1*40*2*AVAILITY 5010*****46*030240928~",
-        "HL*1**20*1~",
     ]
+
+    hierarchical_levels = get_hierarchical_levels(claim)
 
     content = [
         # "HEADER",
         *header,
+        hierarchical_levels[0],
         # "BILLING PROVIDER LOOP",
-        *billing_provider_loop(claim.billing),
-        "HL*2*1*22*0~",  # Hierarchical Level
+        *billing_provider_loop(claim),
         # "SUBSCRIBER LOOP",
-        *subscriber_loop(claim.subscriber, claim.claim_information),
+        hierarchical_levels[1],
+        *subscriber_loop(claim),
         # "PAYER LOOP",
         *entity_segment(
             claim.receiver,
             EntityIdentifierCode.Payer,
             ReferenceIdentificationQualifier.Payer,
         ),
+        # "DEPENDENT LOOP",
+        *dependent_loop(claim.dependent, hierarchical_levels),
         # "CLAIM INFORMATION LOOP",
         *claim_information_loop(claim.claim_information),
         # "SERVICE FACILITY LOOP",
-        *service_facility_loop(claim.claim_information.service_facility_location),
+        *service_facility_segment(claim),
         # "SERVICE LINE LOOP",
-        *service_line_loop(claim),
+        *service_line_segment(claim),
     ]
 
     trailer = [
@@ -86,6 +93,11 @@ def main():
         print(f"Error: File '{filename}' is not valid JSON")
         sys.exit(1)
     except ValidationError as e:
+        # In a production environment, this would be a great way to detect
+        # changes in json claim schema or scenarios we failed to account for.
+        # We could store unprocessed claims to either be manually processed later
+        # or to be processed ad-hoc once the appropriate changes are made to
+        # this library
         print(f"Error: JSON validation failed: {e}")
         sys.exit(1)
 

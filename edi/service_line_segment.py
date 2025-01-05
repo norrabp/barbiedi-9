@@ -1,19 +1,15 @@
-from constants import (
-    DateTimePeriodFormatQualifier,
-    DateTimeQualifier,
-    EntityIdentifierCode,
-    EntityTypeQualifier,
-    ProviderType,
-    ReferenceIdentificationQualifier,
-    SegmentHeader,
-)
+from constants import (DateTimePeriodFormatQualifier, DateTimeQualifier,
+                       EntityIdentifierCode, EntityTypeQualifier, ProviderType,
+                       ReferenceIdentificationQualifier, SegmentHeader)
+from edi.professional_service_segment import professional_service_segment
+from edi.rendering_provider_segment import rendering_provider_segment
 from models.claim import Claim
 from models.service_line import ServiceLine
-from util.professional_service_segment import professional_service_segment
-from util.rendering_provider_segment import rendering_provider_segment
 
 
-def service_line_loop(claim: Claim) -> list[str]:
+def service_line_segment(claim: Claim) -> list[str]:
+    # We show the rendering provider at the service line level
+    # if there is no rendering provider at the claim level
     service_line_level_rendering_provider = claim.rendering is None
     service_lines = (
         []
@@ -22,7 +18,7 @@ def service_line_loop(claim: Claim) -> list[str]:
     )
     for line_num, service_line in enumerate(claim.claim_information.service_lines):
         service_lines.extend(
-            individual_service_line_loop(
+            individual_service_line_segment(
                 service_line, line_num + 1, service_line_level_rendering_provider
             )
         )
@@ -30,13 +26,13 @@ def service_line_loop(claim: Claim) -> list[str]:
     return service_lines
 
 
-def individual_service_line_loop(
+def individual_service_line_segment(
     service_line: ServiceLine, line_num: int, include_rendering_provider: bool
 ) -> list[str]:
     service_line_segments = [
         "*".join(
             [
-                SegmentHeader.ServiceLineNumber.value,
+                SegmentHeader.ServiceLineNumber,
                 str(line_num),
             ]
         )
@@ -44,9 +40,9 @@ def individual_service_line_loop(
         *professional_service_segment(service_line.professional_service),
         "*".join(
             [
-                SegmentHeader.ServiceDate.value,
-                DateTimeQualifier.Service.value,
-                DateTimePeriodFormatQualifier.CCYYMMDD.value,
+                SegmentHeader.ServiceDate,
+                DateTimeQualifier.Service,
+                DateTimePeriodFormatQualifier.YYYYMMDD,
                 service_line.service_date,
             ]
         )

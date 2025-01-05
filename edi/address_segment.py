@@ -4,7 +4,7 @@ from models.address import Address
 
 def address_segment(address: Address) -> str:
     line_one_content = [
-        SegmentHeader.AddressLine1.value,
+        SegmentHeader.AddressLine1,  # N3
         address.address1,
     ]
     if address.address2:
@@ -15,7 +15,7 @@ def address_segment(address: Address) -> str:
         # city, state, postal code (N4) segment
         "*".join(
             [
-                SegmentHeader.CityStatePostalCode.value,
+                SegmentHeader.CityStatePostalCode,  # N4
                 address.city,
                 address.state,
                 address.postal_code,
