@@ -42,7 +42,7 @@ barbiedi-9-main
 │   ├── claim.py
 │   ├── claim_information.py
 │   ├── contact_information.py
-│   ├── entity.py (contains all similar entities such as providers and facilitiess)
+│   ├── entity.py (contains all similar entities such as providers and facilities)
 │   ├── patient.py
 │   ├── provider.py
 │   └── service_line.py
