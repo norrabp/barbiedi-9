@@ -11,45 +11,48 @@ python3 json_to_edi.py <path_to_json_file>
 ```
 
 ## Structure
-barbiedi/
- => constants.py
- => core/ (Functions to generate EDI segments)
-	=> address_segment.py
-	=> billing_provider_loop.py
-	=> claim_information_loop.py
-	=> contact_information_segment.py
-	=> dependent_loop.py
-	=> entity_segment.py
-	=> professional_service_segment.py
-	=> rendering_provider_segment.py
-	=> service_facility_location_segment.py
-	=> service_line_loop.py
-	=> subscriber_loop.py
- => examples/
-	=> mojo_dojo_casa_house.837
-	=> mojo_dojo_casa_house.json
-	=> multi_procedure_barbie.837
-	=> multi_procedure_barbie.json
-	=> subscriber_with_a_dekendent.837
-	=> subscriber_with_a_dekendent.json
- => models/ (Pydantic models to validate JSON data)
-	=> address.py
-	=> base.py (Base model for all models)
-	=> claim.py (Root model for a claim JSON file)
-	=> claim_information.py
-	=> contact_information.py
-	=> entity.py (Contains multiple defined entities)
-	=> patient.py
-	=> service_line.py
- => json_to_edi.py
- => util/
-	=> get_hierarchical_levels.py
- => .gitignore
- => README.md
- => requirements.txt
- => tests
- => .env
 
+```
+barbiedi-9-main
+├── README.md
+├── constants.py
+├── edi
+│   ├── address_segment.py
+│   ├── billing_provider_loop.py
+│   ├── claim_information_loop.py
+│   ├── contact_information_segment.py
+│   ├── dependent_loop.py
+│   ├── entity_segment.py
+│   ├── professional_service_segment.py
+│   ├── rendering_provider_segment.py
+│   ├── service_facility_segment.py
+│   ├── service_line_segment.py
+│   └── subscriber_loop.py
+├── examples
+│   ├── mojo_dojo_casa_house.837
+│   ├── mojo_dojo_casa_house.json
+│   ├── multi_procedure_barbie.837
+│   ├── multi_procedure_barbie.json
+│   ├── subscriber_with_a_dekendent.837
+│   └── subscriber_with_a_dekendent.json
+├── json_to_edi.py
+├── models
+│   ├── address.py
+│   ├── camel_case_base_model.py (base pydantic model)
+│   ├── claim.py
+│   ├── claim_information.py
+│   ├── contact_information.py
+│   ├── entity.py (contains all similar entities such as providers and facilitiess)
+│   ├── patient.py
+│   ├── provider.py
+│   └── service_line.py
+├── requirements.txt
+├── tests.py
+└── util
+    └── get_hierarchical_levels.py
+```
+
+    
 As this library grows, I would like to restructure this codebase to group the code by area such as 'providers', 'patients', 'claims', etc. But for now it 
 feels more readable to have a simpler structure.
 
